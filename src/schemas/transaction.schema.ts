@@ -8,11 +8,14 @@ export class Transaction {
   @Prop({ required: true, type: Types.ObjectId, ref: 'User', index: true })
   userId: Types.ObjectId;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'Account', index: true })
-  accountId: Types.ObjectId;
+  @Prop({ default: null, type: Types.ObjectId, ref: 'Account', index: true })
+  accountId: Types.ObjectId | null;
 
   @Prop({ default: null, type: Types.ObjectId, ref: 'Account' })
   toAccountId: Types.ObjectId | null;
+
+  @Prop({ default: null, type: Types.ObjectId, ref: 'Savings', index: true })
+  savingsId: Types.ObjectId | null;
 
   @Prop({ default: null, type: Types.ObjectId, ref: 'FinanceCategory' })
   financeCategoryId: Types.ObjectId | null;
@@ -52,6 +55,9 @@ export class Transaction {
 
   @Prop({ default: null, type: Types.ObjectId, ref: 'Transaction' })
   refundedTransactionId: Types.ObjectId | null;
+
+  @Prop({ default: null, type: Types.ObjectId, ref: 'Subscription', index: true })
+  subscriptionId: Types.ObjectId | null;
 }
 
 export const TransactionSchema = SchemaFactory.createForClass(Transaction);

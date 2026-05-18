@@ -9,8 +9,8 @@ export class DebtsController {
   constructor(private readonly debtsService: DebtsService) {}
 
   @Get()
-  findAll(@Req() req, @Query('type') type?: string, @Query('status') status?: string) {
-    return this.debtsService.findAll(req.user.authId, type, status);
+  findAll(@Req() req, @Query('type') type?: string, @Query('status') status?: string, @Query('budgetProfileId') budgetProfileId?: string) {
+    return this.debtsService.findAll(req.user.authId, type, status, budgetProfileId);
   }
 
   @Get(':id')

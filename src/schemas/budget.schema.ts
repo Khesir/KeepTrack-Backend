@@ -23,8 +23,9 @@ export class Budget {
   @Prop({ default: null, type: Types.ObjectId, ref: 'Account' })
   accountId: Types.ObjectId | null;
 
-  @Prop({ required: true, index: true })
-  month: string;
+  // For monthly budgets: 'YYYY-MM'. For profile budgets: null.
+  @Prop({ default: null, index: true })
+  month: string | null;
 
   @Prop({ required: true })
   title: string;
@@ -32,8 +33,12 @@ export class Budget {
   @Prop({ required: true, enum: ['income', 'expense'] })
   budgetType: string;
 
-  @Prop({ required: true, enum: ['monthly', 'oneTime'] })
+  @Prop({ required: true, enum: ['monthly', 'oneTime', 'profile'] })
   periodType: string;
+
+  // Set when this budget group belongs to a BudgetProfile (not a MonthPlan)
+  @Prop({ default: null, type: Types.ObjectId, ref: 'BudgetProfile', index: true })
+  budgetProfileId: Types.ObjectId | null;
 
   @Prop({ default: 'active', enum: ['active', 'closed'], index: true })
   status: string;
@@ -56,9 +61,14 @@ export const BudgetSchema = SchemaFactory.createForClass(Budget);
 BudgetSchema.set('toJSON', {
   virtuals: true,
   transform: (_: any, ret: any) => {
-    ret.id = ret._id;
+    ret.id = ret._id?.toString();
     delete ret._id;
     delete ret.__v;
+
+    // Ensure ObjectId references are strings
+    if (ret.budgetProfileId) ret.budgetProfileId = ret.budgetProfileId.toString();
+    if (ret.accountId) ret.accountId = ret.accountId.toString();
+    if (ret.userId) ret.userId = ret.userId.toString();
 
     // Normalise embedded category subdocuments
     if (Array.isArray(ret.categories)) {

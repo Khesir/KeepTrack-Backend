@@ -10,4 +10,5 @@ export class UpdateGoalDto {
   @IsOptional() @IsNumber() iconCodePoint?: number;
   @IsOptional() @IsEnum(['active', 'completed', 'paused']) status?: string;
   @IsOptional() @IsNumber() monthlyContribution?: number;
+  @IsOptional() @IsString() savingsBucketId?: string;
 }

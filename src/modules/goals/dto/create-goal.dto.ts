@@ -11,4 +11,6 @@ export class CreateGoalDto {
   @IsOptional() @IsNumber() monthlyContribution?: number;
   @IsOptional() @IsNumber() managementFeePercent?: number;
   @IsOptional() @IsNumber() withdrawalFeePercent?: number;
+  @IsOptional() @IsString() savingsBucketId?: string;
+  @IsOptional() @IsString() budgetProfileId?: string;
 }

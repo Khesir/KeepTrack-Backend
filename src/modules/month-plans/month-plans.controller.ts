@@ -8,8 +8,17 @@ export class MonthPlansController {
   constructor(private readonly monthPlansService: MonthPlansService) {}
 
   @Get()
-  findAll(@Req() req, @Query('month') month?: string) {
-    return this.monthPlansService.findAll(req.user.authId, month);
+  findAll(
+    @Req() req,
+    @Query('month') month?: string,
+    @Query('budgetProfileId') budgetProfileId?: string,
+  ) {
+    return this.monthPlansService.findAll(req.user.authId, month, budgetProfileId);
+  }
+
+  @Post('profile/:profileId/get-or-create')
+  getOrCreateForProfile(@Param('profileId') profileId: string, @Req() req) {
+    return this.monthPlansService.getOrCreateForProfile(profileId, req.user.authId);
   }
 
   @Get('by-month/:month')

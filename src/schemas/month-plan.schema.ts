@@ -11,8 +11,13 @@ export class MonthPlan {
   @Prop({ default: null, type: Types.ObjectId, ref: 'Account' })
   accountId: Types.ObjectId | null;
 
-  @Prop({ required: true })
-  month: string;
+  // null for profile plans; required for monthly plans
+  @Prop({ default: null, index: true })
+  month: string | null;
+
+  // null for monthly plans; required for profile plans
+  @Prop({ default: null, type: Types.ObjectId, ref: 'BudgetProfile', index: true })
+  budgetProfileId: Types.ObjectId | null;
 
   @Prop({ default: null })
   notes: string | null;
@@ -23,7 +28,9 @@ export class MonthPlan {
 
 export const MonthPlanSchema = SchemaFactory.createForClass(MonthPlan);
 
-MonthPlanSchema.index({ userId: 1, month: 1 }, { unique: true });
+// Separate sparse unique indexes so monthly and profile plans don't conflict
+MonthPlanSchema.index({ userId: 1, month: 1 }, { unique: true, sparse: true });
+MonthPlanSchema.index({ userId: 1, budgetProfileId: 1 }, { unique: true, sparse: true });
 
 MonthPlanSchema.set('toJSON', {
   virtuals: true,

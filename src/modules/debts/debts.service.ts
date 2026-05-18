@@ -14,10 +14,13 @@ export class DebtsService {
     @InjectModel(Transaction.name) private transactionModel: Model<TransactionDocument>,
   ) {}
 
-  findAll(authId: string, type?: string, status?: string) {
+  findAll(authId: string, type?: string, status?: string, budgetProfileId?: string) {
     const filter: any = { userId: new Types.ObjectId(authId) };
     if (type) filter.type = type;
     if (status) filter.status = status;
+    if (budgetProfileId !== undefined) {
+      filter.budgetProfileId = budgetProfileId ? new Types.ObjectId(budgetProfileId) : null;
+    }
     return this.debtModel.find(filter);
   }
 
@@ -33,6 +36,7 @@ export class DebtsService {
       userId: new Types.ObjectId(authId),
       accountId: dto.accountId ? new Types.ObjectId(dto.accountId) : null,
       transactionId: dto.transactionId ? new Types.ObjectId(dto.transactionId) : null,
+      budgetProfileId: dto.budgetProfileId ? new Types.ObjectId(dto.budgetProfileId) : null,
     });
   }
 

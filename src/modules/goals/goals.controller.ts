@@ -9,8 +9,8 @@ export class GoalsController {
   constructor(private readonly goalsService: GoalsService) {}
 
   @Get()
-  findAll(@Req() req, @Query('status') status?: string) {
-    return this.goalsService.findAll(req.user.authId, status);
+  findAll(@Req() req, @Query('status') status?: string, @Query('budgetProfileId') budgetProfileId?: string) {
+    return this.goalsService.findAll(req.user.authId, status, budgetProfileId);
   }
 
   @Get(':id')
@@ -41,5 +41,10 @@ export class GoalsController {
   @Post(':id/contribute')
   contribute(@Param('id') id: string, @Body() dto: ContributeGoalDto, @Req() req) {
     return this.goalsService.contribute(id, dto, req.user.authId);
+  }
+
+  @Post(':id/withdraw')
+  withdraw(@Param('id') id: string, @Body('amount') amount: number, @Req() req) {
+    return this.goalsService.withdraw(id, amount, req.user.authId);
   }
 }

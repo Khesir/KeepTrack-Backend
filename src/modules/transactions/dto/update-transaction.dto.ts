@@ -14,4 +14,5 @@ export class UpdateTransactionDto {
   @IsOptional() @IsString() budgetId?: string;
   @IsOptional() @IsString() debtId?: string;
   @IsOptional() @IsString() goalId?: string;
+  @IsOptional() @IsString() savingsId?: string;
 }

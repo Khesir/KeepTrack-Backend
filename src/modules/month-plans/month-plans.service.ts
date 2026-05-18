@@ -13,9 +13,10 @@ export class MonthPlansService {
     @InjectModel(Budget.name) private budgetModel: Model<BudgetDocument>,
   ) {}
 
-  findAll(authId: string, month?: string) {
+  findAll(authId: string, month?: string, budgetProfileId?: string) {
     const filter: any = { userId: new Types.ObjectId(authId) };
     if (month) filter.month = month;
+    if (budgetProfileId) filter.budgetProfileId = new Types.ObjectId(budgetProfileId);
     return this.monthPlanModel.find(filter);
   }
 
@@ -40,8 +41,17 @@ export class MonthPlansService {
       ...dto,
       userId: new Types.ObjectId(authId),
       accountId: dto.accountId ? new Types.ObjectId(dto.accountId) : null,
+      budgetProfileId: dto.budgetProfileId ? new Types.ObjectId(dto.budgetProfileId) : null,
       budgetIds: (dto.budgetIds ?? []).map((id) => new Types.ObjectId(id)),
     });
+  }
+
+  async getOrCreateForProfile(profileId: string, authId: string) {
+    const userId = new Types.ObjectId(authId);
+    const budgetProfileId = new Types.ObjectId(profileId);
+    const existing = await this.monthPlanModel.findOne({ userId, budgetProfileId });
+    if (existing) return existing;
+    return this.monthPlanModel.create({ userId, budgetProfileId, month: null, budgetIds: [] });
   }
 
   async update(id: string, dto: UpdateMonthPlanDto, authId: string) {
@@ -62,9 +72,11 @@ export class MonthPlansService {
     if (!doc) throw new NotFoundException();
 
     if (includeBudgets) {
-      // Delete all budgets for this month by month key — more reliable than
-      // relying on budgetIds which may lag if a budget was created outside this plan
-      await this.budgetModel.deleteMany({ userId, month: doc.month });
+      if (doc.budgetProfileId) {
+        await this.budgetModel.deleteMany({ userId, budgetProfileId: doc.budgetProfileId });
+      } else {
+        await this.budgetModel.deleteMany({ userId, month: doc.month });
+      }
     }
 
     await doc.deleteOne();
