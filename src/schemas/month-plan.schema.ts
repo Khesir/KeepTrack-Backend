@@ -28,9 +28,17 @@ export class MonthPlan {
 
 export const MonthPlanSchema = SchemaFactory.createForClass(MonthPlan);
 
-// Separate sparse unique indexes so monthly and profile plans don't conflict
-MonthPlanSchema.index({ userId: 1, month: 1 }, { unique: true, sparse: true });
-MonthPlanSchema.index({ userId: 1, budgetProfileId: 1 }, { unique: true, sparse: true });
+// Partial-filter indexes — only enforce uniqueness when the field has a real value.
+// sparse:true treats explicit null as a real value (causing dup-key on profile plans),
+// so we use partialFilterExpression to only index documents where the field is present.
+MonthPlanSchema.index(
+  { userId: 1, month: 1 },
+  { unique: true, name: 'userId_month_unique', partialFilterExpression: { month: { $type: 'string' } } },
+);
+MonthPlanSchema.index(
+  { userId: 1, budgetProfileId: 1 },
+  { unique: true, name: 'userId_budgetProfileId_unique', partialFilterExpression: { budgetProfileId: { $type: 'objectId' } } },
+);
 
 MonthPlanSchema.set('toJSON', {
   virtuals: true,

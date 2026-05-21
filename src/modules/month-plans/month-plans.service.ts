@@ -51,7 +51,9 @@ export class MonthPlansService {
     const budgetProfileId = new Types.ObjectId(profileId);
     const existing = await this.monthPlanModel.findOne({ userId, budgetProfileId });
     if (existing) return existing;
-    return this.monthPlanModel.create({ userId, budgetProfileId, month: null, budgetIds: [] });
+    // Do NOT include month field — omitting it avoids the { userId, month: null }
+    // duplicate-key collision on the partial-filter unique index.
+    return this.monthPlanModel.create({ userId, budgetProfileId, budgetIds: [] });
   }
 
   async update(id: string, dto: UpdateMonthPlanDto, authId: string) {
