@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import { Body, Controller, Post, Req, Version } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -6,6 +6,7 @@ import { GoogleAuthDto } from './dto/google-auth.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { Public } from './public.decorator';
 
+@Version(['1', '2'])
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

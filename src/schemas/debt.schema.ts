@@ -58,6 +58,9 @@ export class Debt {
 
   @Prop({ default: null })
   settledAt: Date | null;
+
+  @Prop({ default: null, type: Types.ObjectId, ref: 'BudgetProfile', index: true })
+  budgetProfileId: Types.ObjectId | null;
 }
 
 export const DebtSchema = SchemaFactory.createForClass(Debt);
@@ -65,9 +68,11 @@ export const DebtSchema = SchemaFactory.createForClass(Debt);
 DebtSchema.set('toJSON', {
   virtuals: true,
   transform: (_: any, ret: any) => {
-    ret.id = ret._id;
+    ret.id = ret._id?.toString();
     delete ret._id;
     delete ret.__v;
+    if (ret.budgetProfileId) ret.budgetProfileId = ret.budgetProfileId.toString();
+    if (ret.accountId) ret.accountId = ret.accountId.toString();
     return ret;
   },
 });

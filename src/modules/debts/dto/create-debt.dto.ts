@@ -16,4 +16,5 @@ export class CreateDebtDto {
   @IsEnum(['weekly', 'biweekly', 'monthly', 'quarterly'])
   paymentFrequency?: string;
   @IsOptional() @IsString() notes?: string;
+  @IsOptional() @IsString() budgetProfileId?: string;
 }

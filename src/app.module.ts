@@ -3,21 +3,21 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_GUARD } from '@nestjs/core';
 
-import { AccountsModule } from './modules/accounts/accounts.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
-import { BucketsModule } from './modules/buckets/buckets.module';
-import { BudgetsModule } from './modules/budgets/budgets.module';
-import { DebtsModule } from './modules/debts/debts.module';
-import { FinanceCategoriesModule } from './modules/finance-categories/finance-categories.module';
-import { GoalsModule } from './modules/goals/goals.module';
-import { MonthPlansModule } from './modules/month-plans/month-plans.module';
-import { PlannedPaymentsModule } from './modules/planned-payments/planned-payments.module';
-import { PomodoroSessionsModule } from './modules/pomodoro-sessions/pomodoro-sessions.module';
-import { ProjectsModule } from './modules/projects/projects.module';
-import { TasksModule } from './modules/tasks/tasks.module';
-import { TransactionsModule } from './modules/transactions/transactions.module';
 import { UsersModule } from './modules/users/users.module';
+import { SavingsModule } from './modules/savings/savings.module';
+import { BucketsModule } from './modules/buckets/buckets.module';
+import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
+import { TransactionsModule } from './modules/transactions/transactions.module';
+import { FinanceCategoriesModule } from './modules/finance-categories/finance-categories.module';
+import { BudgetsModule } from './modules/budgets/budgets.module';
+import { BudgetProfilesModule } from './modules/budget-profiles/budget-profiles.module';
+import { MonthPlansModule } from './modules/month-plans/month-plans.module';
+import { DebtsModule } from './modules/debts/debts.module';
+import { GoalsModule } from './modules/goals/goals.module';
+import { PlannedPaymentsModule } from './modules/planned-payments/planned-payments.module';
+import { TransactionPlansModule } from './modules/transaction-plans/transaction-plans.module';
+import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 
 let cachedConnection: any = null;
 
@@ -37,18 +37,18 @@ let cachedConnection: any = null;
     }),
     AuthModule,
     UsersModule,
-    AccountsModule,
+    SavingsModule,
+    BucketsModule,
+    SubscriptionsModule,
     TransactionsModule,
     FinanceCategoriesModule,
     BudgetsModule,
+    BudgetProfilesModule,
     MonthPlansModule,
     DebtsModule,
     GoalsModule,
     PlannedPaymentsModule,
-    BucketsModule,
-    ProjectsModule,
-    TasksModule,
-    PomodoroSessionsModule,
+    TransactionPlansModule,
   ],
   providers: [
     {

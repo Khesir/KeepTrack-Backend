@@ -43,6 +43,12 @@ export class Goal {
 
   @Prop({ default: null })
   completedAt: Date | null;
+
+  @Prop({ type: Types.ObjectId, ref: 'Savings', default: null })
+  savingsBucketId: Types.ObjectId | null;
+
+  @Prop({ default: null, type: Types.ObjectId, ref: 'BudgetProfile', index: true })
+  budgetProfileId: Types.ObjectId | null;
 }
 
 export const GoalSchema = SchemaFactory.createForClass(Goal);
@@ -50,9 +56,10 @@ export const GoalSchema = SchemaFactory.createForClass(Goal);
 GoalSchema.set('toJSON', {
   virtuals: true,
   transform: (_: any, ret: any) => {
-    ret.id = ret._id;
+    ret.id = ret._id?.toString();
     delete ret._id;
     delete ret.__v;
+    if (ret.budgetProfileId) ret.budgetProfileId = ret.budgetProfileId.toString();
     return ret;
   },
 });

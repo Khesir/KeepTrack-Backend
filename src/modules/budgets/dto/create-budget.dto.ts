@@ -12,8 +12,9 @@ export class CreateBudgetDto {
   @IsString() month: string;
   @IsString() title: string;
   @IsEnum(['income', 'expense']) budgetType: string;
-  @IsEnum(['monthly', 'oneTime']) periodType: string;
+  @IsEnum(['monthly', 'oneTime', 'profile']) periodType: string;
   @IsOptional() @IsString() accountId?: string;
+  @IsOptional() @IsString() budgetProfileId?: string;
   @IsOptional() @IsString() notes?: string;
   @IsOptional() @IsNumber() customTargetAmount?: number;
   @IsOptional()

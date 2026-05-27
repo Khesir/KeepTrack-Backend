@@ -16,6 +16,7 @@ export class TransactionsService {
     authId: string,
     query: {
       accountId?: string;
+      savingsId?: string;
       type?: string;
       dateFrom?: string;
       dateTo?: string;
@@ -32,6 +33,7 @@ export class TransactionsService {
   ) {
     const filter: any = { userId: new Types.ObjectId(authId) };
     if (query.accountId) filter.accountId = new Types.ObjectId(query.accountId);
+    if (query.savingsId) filter.savingsId = new Types.ObjectId(query.savingsId);
     if (query.type) filter.type = query.type;
     if (query.budgetId) filter.budgetId = new Types.ObjectId(query.budgetId);
     if (query.debtId) filter.debtId = new Types.ObjectId(query.debtId);
@@ -92,8 +94,9 @@ export class TransactionsService {
     return this.transactionModel.create({
       ...dto,
       userId: new Types.ObjectId(authId),
-      accountId: new Types.ObjectId(dto.accountId),
+      accountId: dto.accountId ? new Types.ObjectId(dto.accountId) : null,
       toAccountId: this.toObjectId(dto.toAccountId),
+      savingsId: this.toObjectId(dto.savingsId),
       financeCategoryId: this.toObjectId(dto.financeCategoryId),
       budgetId: this.toObjectId(dto.budgetId),
       debtId: this.toObjectId(dto.debtId),

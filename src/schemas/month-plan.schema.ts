@@ -11,8 +11,13 @@ export class MonthPlan {
   @Prop({ default: null, type: Types.ObjectId, ref: 'Account' })
   accountId: Types.ObjectId | null;
 
-  @Prop({ required: true })
-  month: string;
+  // null for profile plans; required for monthly plans
+  @Prop({ default: null, index: true })
+  month: string | null;
+
+  // null for monthly plans; required for profile plans
+  @Prop({ default: null, type: Types.ObjectId, ref: 'BudgetProfile', index: true })
+  budgetProfileId: Types.ObjectId | null;
 
   @Prop({ default: null })
   notes: string | null;
@@ -23,7 +28,17 @@ export class MonthPlan {
 
 export const MonthPlanSchema = SchemaFactory.createForClass(MonthPlan);
 
-MonthPlanSchema.index({ userId: 1, month: 1 }, { unique: true });
+// Partial-filter indexes — only enforce uniqueness when the field has a real value.
+// sparse:true treats explicit null as a real value (causing dup-key on profile plans),
+// so we use partialFilterExpression to only index documents where the field is present.
+MonthPlanSchema.index(
+  { userId: 1, month: 1 },
+  { unique: true, name: 'userId_month_unique', partialFilterExpression: { month: { $type: 'string' } } },
+);
+MonthPlanSchema.index(
+  { userId: 1, budgetProfileId: 1 },
+  { unique: true, name: 'userId_budgetProfileId_unique', partialFilterExpression: { budgetProfileId: { $type: 'objectId' } } },
+);
 
 MonthPlanSchema.set('toJSON', {
   virtuals: true,

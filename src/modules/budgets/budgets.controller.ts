@@ -14,8 +14,9 @@ export class BudgetsController {
     @Query('month') month?: string,
     @Query('status') status?: string,
     @Query('budgetType') budgetType?: string,
+    @Query('budgetProfileId') budgetProfileId?: string,
   ) {
-    return this.budgetsService.findAll(req.user.authId, month, status, budgetType);
+    return this.budgetsService.findAll(req.user.authId, month, status, budgetType, budgetProfileId);
   }
 
   @Get(':id')

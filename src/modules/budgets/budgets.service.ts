@@ -13,11 +13,12 @@ export class BudgetsService {
     @InjectModel(Budget.name) private budgetModel: Model<BudgetDocument>,
   ) {}
 
-  findAll(authId: string, month?: string, status?: string, budgetType?: string) {
+  findAll(authId: string, month?: string, status?: string, budgetType?: string, budgetProfileId?: string) {
     const filter: any = { userId: new Types.ObjectId(authId) };
     if (month) filter.month = month;
     if (status) filter.status = status;
     if (budgetType) filter.budgetType = budgetType;
+    if (budgetProfileId) filter.budgetProfileId = new Types.ObjectId(budgetProfileId);
     return this.budgetModel.find(filter).populate('categories.financeCategoryId');
   }
 
@@ -40,6 +41,7 @@ export class BudgetsService {
       ...dto,
       userId,
       accountId: dto.accountId ? new Types.ObjectId(dto.accountId) : null,
+      budgetProfileId: dto.budgetProfileId ? new Types.ObjectId(dto.budgetProfileId) : null,
       categories,
     });
   }
