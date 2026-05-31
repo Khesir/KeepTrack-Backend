@@ -17,6 +17,7 @@ import { DebtsModule } from './modules/debts/debts.module';
 import { GoalsModule } from './modules/goals/goals.module';
 import { PlannedPaymentsModule } from './modules/planned-payments/planned-payments.module';
 import { TransactionPlansModule } from './modules/transaction-plans/transaction-plans.module';
+import { BackupModule } from './modules/backup/backup.module';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 
 let cachedConnection: any = null;
@@ -49,6 +50,7 @@ let cachedConnection: any = null;
     GoalsModule,
     PlannedPaymentsModule,
     TransactionPlansModule,
+    BackupModule,
   ],
   providers: [
     {
