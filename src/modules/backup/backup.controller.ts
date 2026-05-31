@@ -11,6 +11,11 @@ export class BackupController {
     return this.backupService.upsert(req.user.authId, dto);
   }
 
+  @Get('meta')
+  getMeta(@Req() req) {
+    return this.backupService.getMeta(req.user.authId);
+  }
+
   @Get()
   get(@Req() req) {
     return this.backupService.get(req.user.authId);
