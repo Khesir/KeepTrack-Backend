@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { put } from '@vercel/blob';
 import { Backup, BackupDocument } from '../../schemas/backup.schema';
 import { UpsertBackupDto } from './dto/upsert-backup.dto';
 
@@ -11,9 +12,15 @@ export class BackupService {
   ) {}
 
   async upsert(authId: string, dto: UpsertBackupDto) {
+    const blob = await put(`backups/${authId}.ktbak`, dto.data, {
+      access: 'public',
+      addRandomSuffix: false,
+      contentType: 'text/plain',
+    });
+
     return this.backupModel.findOneAndUpdate(
       { userId: new Types.ObjectId(authId) },
-      { userId: new Types.ObjectId(authId), data: dto.data },
+      { userId: new Types.ObjectId(authId), blobUrl: blob.url },
       { upsert: true, new: true },
     );
   }
@@ -30,6 +37,10 @@ export class BackupService {
   async get(authId: string) {
     const doc = await this.backupModel.findOne({ userId: new Types.ObjectId(authId) });
     if (!doc) throw new NotFoundException('No backup found');
-    return { data: doc.data };
+
+    const res = await fetch(doc.blobUrl);
+    if (!res.ok) throw new NotFoundException('Backup file not found');
+    const data = await res.text();
+    return { data };
   }
 }

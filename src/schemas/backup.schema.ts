@@ -9,7 +9,7 @@ export class Backup {
   userId: Types.ObjectId;
 
   @Prop({ required: true })
-  data: string;
+  blobUrl: string;
 }
 
 export const BackupSchema = SchemaFactory.createForClass(Backup);
