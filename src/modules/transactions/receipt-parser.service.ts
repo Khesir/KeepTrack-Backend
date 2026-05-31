@@ -2,25 +2,32 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import Groq from 'groq-sdk';
 import { ParsedTransactionItemDto } from './dto/parse-receipt.dto';
 
-const RECEIPT_PROMPT = (today: string) => `You are a financial data extraction assistant. The user photographed a handwritten list of daily expenses or income.
+const RECEIPT_PROMPT = (today: string) => `You are a financial data extraction assistant. The user photographed a handwritten list of daily expenses, income, or financial notes.
 
 Extract every transaction line you can read. Return ONLY a JSON array — no explanation, no markdown fences.
 
 Each item must have exactly these fields:
 - "amount": number (always positive, e.g. 250.00)
 - "type": "expense" or "income"
-- "description": string — concise label of what was purchased/earned (max 60 chars)
+- "description": string — concise label of what was purchased/earned/paid (max 60 chars)
 - "date": ISO date string e.g. "${today}". Use today's date if none is written.
-- "categoryName": string — infer a short category (e.g. "Food", "Transport", "Salary", "Grocery", "Utilities", "Entertainment")
+- "categoryName": string — infer a short category (e.g. "Food", "Transport", "Salary", "Utilities", "Subscriptions", "Debt Payment", "Savings", "Entertainment")
+- "entityType": one of "subscription" | "debt_payment" | "lending" | "goal" | null
+  - "subscription": recurring service payment (wifi, Netflix, Spotify, electricity, water, phone bill, etc.)
+  - "debt_payment": paying back money owed to someone ("paid X", "bayad kay X", "utang kay X")
+  - "lending": lending money to someone ("borrowed to X", "pinahiram si X", "loan to X", "lent to X")
+  - "goal": savings contribution toward a goal ("saved for X", "contributed to X", "deposited for X fund")
+  - null: regular transaction that doesn't fit the above
+- "entityHint": string | null — the name/identifier to help match the entity (service name for subscription, person name for debt/lending, goal name for goal). null if not identifiable.
 
 Rules:
 - Always positive amounts. Strip currency symbols (₱, $, ₩, etc.).
-- Default type to "expense" when ambiguous.
+- Default type to "expense" when ambiguous. Lending is expense (money going out). Debt collection is income.
 - Skip lines you cannot read clearly.
 - If no financial data is visible, return an empty array: []
 
 Output example:
-[{"amount":150.00,"type":"expense","description":"Lunch","date":"${today}","categoryName":"Food"},{"amount":5000.00,"type":"income","description":"Freelance payment","date":"${today}","categoryName":"Salary"}]`;
+[{"amount":150.00,"type":"expense","description":"Lunch","date":"${today}","categoryName":"Food","entityType":null,"entityHint":null},{"amount":2699.00,"type":"expense","description":"PLDT Wifi Bill","date":"${today}","categoryName":"Subscriptions","entityType":"subscription","entityHint":"PLDT"},{"amount":500.00,"type":"expense","description":"Paid John","date":"${today}","categoryName":"Debt Payment","entityType":"debt_payment","entityHint":"John"},{"amount":1000.00,"type":"expense","description":"Contributed to Emergency Fund","date":"${today}","categoryName":"Savings","entityType":"goal","entityHint":"Emergency Fund"}]`;
 
 @Injectable()
 export class ReceiptParserService {
@@ -78,12 +85,15 @@ export class ReceiptParserService {
       throw new BadRequestException('Unexpected AI response format.');
     }
 
+    const validEntityTypes = ['subscription', 'debt_payment', 'lending', 'goal'];
     return parsed.map((item: any): ParsedTransactionItemDto => ({
       amount: Math.abs(Number(item.amount ?? 0)),
       type: item.type === 'income' ? 'income' : 'expense',
       description: String(item.description ?? '').trim().slice(0, 60),
       date: this._normalizeDate(item.date, today),
       categoryName: String(item.categoryName ?? 'Other').trim(),
+      entityType: validEntityTypes.includes(item.entityType) ? item.entityType : null,
+      entityHint: item.entityHint ? String(item.entityHint).trim().slice(0, 60) : null,
     }));
   }
 

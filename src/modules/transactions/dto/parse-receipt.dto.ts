@@ -16,4 +16,6 @@ export class ParsedTransactionItemDto {
   description: string;
   date: string;
   categoryName: string;
+  entityType: 'subscription' | 'debt_payment' | 'lending' | 'goal' | null;
+  entityHint: string | null;
 }
