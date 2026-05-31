@@ -5,7 +5,7 @@ import { TransactionsService } from './transactions.service';
 import { ReceiptParserService } from './receipt-parser.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { ParseReceiptDto } from './dto/parse-receipt.dto';
+import { ParseReceiptDto, ParseTextDto } from './dto/parse-receipt.dto';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -42,6 +42,11 @@ export class TransactionsController {
   @Post('parse-receipt')
   parseReceipt(@Body() dto: ParseReceiptDto) {
     return this.receiptParserService.parseReceipt(dto.imageBase64, dto.mimeType);
+  }
+
+  @Post('parse-text')
+  parseText(@Body() dto: ParseTextDto) {
+    return this.receiptParserService.parseText(dto.text);
   }
 
   @Patch(':id')
