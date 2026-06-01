@@ -20,6 +20,7 @@ import { TransactionPlansModule } from './modules/transaction-plans/transaction-
 import { BackupModule } from './modules/backup/backup.module';
 import { ReleasesModule } from './modules/releases/releases.module';
 import { SupportModule } from './modules/support/support.module';
+import { AnnouncementsModule } from './modules/announcements/announcements.module';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 
 let cachedConnection: any = null;
@@ -55,6 +56,7 @@ let cachedConnection: any = null;
     BackupModule,
     ReleasesModule,
     SupportModule,
+    AnnouncementsModule,
   ],
   providers: [
     {

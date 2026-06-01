@@ -3,6 +3,42 @@ import { Document } from 'mongoose';
 
 export type ReleaseDocument = Release & Document;
 
+export enum PlatformStatus {
+  AVAILABLE = 'available',
+  COMING_SOON = 'coming_soon',
+  NOT_AVAILABLE = 'not_available',
+}
+
+export class WindowsPlatform {
+  status: PlatformStatus;
+  downloadUrl?: string;
+}
+
+export class AndroidPlatform {
+  status: PlatformStatus;
+  apkUrl?: string;
+  playStoreUrl?: string;
+}
+
+export class StorePlatform {
+  status: PlatformStatus;
+  storeUrl?: string;
+}
+
+export class ReleasePlatforms {
+  windows: WindowsPlatform;
+  android: AndroidPlatform;
+  macos: StorePlatform;
+  ios: StorePlatform;
+}
+
+const defaultPlatforms = (): ReleasePlatforms => ({
+  windows: { status: PlatformStatus.COMING_SOON },
+  android: { status: PlatformStatus.COMING_SOON },
+  macos: { status: PlatformStatus.COMING_SOON },
+  ios: { status: PlatformStatus.COMING_SOON },
+});
+
 @Schema({ timestamps: true, collection: 'releases' })
 export class Release {
   @Prop({ required: true })
@@ -14,14 +50,8 @@ export class Release {
   @Prop({ required: true })
   body: string;
 
-  @Prop()
-  exeUrl?: string;
-
-  @Prop()
-  apkUrl?: string;
-
-  @Prop()
-  dmgUrl?: string;
+  @Prop({ type: Object, default: defaultPlatforms })
+  platforms: ReleasePlatforms;
 
   @Prop({ default: false })
   published: boolean;

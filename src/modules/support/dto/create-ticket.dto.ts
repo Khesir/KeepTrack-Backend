@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEmail, IsIn, MaxLength } from 'class-validator';
+import { IsString, IsNotEmpty, IsEmail, IsIn, IsOptional, IsArray, IsUrl, MaxLength, ArrayMaxSize } from 'class-validator';
 
 export class CreateTicketDto {
   @IsString()
@@ -21,4 +21,10 @@ export class CreateTicketDto {
 
   @IsIn(['bug', 'question', 'feature', 'other'])
   type: string;
+
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(5)
+  @IsUrl({}, { each: true })
+  imageUrls?: string[];
 }

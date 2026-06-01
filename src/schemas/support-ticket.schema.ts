@@ -26,6 +26,9 @@ export class SupportTicket {
   @Prop({ default: 'open', enum: ['open', 'in-review', 'resolved'] })
   status: TicketStatus;
 
+  @Prop({ type: [String], default: [] })
+  imageUrls: string[];
+
   @Prop()
   adminNote?: string;
 }

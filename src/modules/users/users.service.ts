@@ -76,6 +76,30 @@ export class UsersService {
     return { photoUrl: `/api/v1/users/me/photo` };
   }
 
+  async getStats() {
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    const [totalUsers, plusUsers, newUsersWeek, newUsersMonth, newPlusWeek, newPlusMonth] =
+      await Promise.all([
+        this.userModel.countDocuments(),
+        this.userModel.countDocuments({ isPlus: true }),
+        this.userModel.countDocuments({ createdAt: { $gte: weekAgo } }),
+        this.userModel.countDocuments({ createdAt: { $gte: monthAgo } }),
+        this.userModel.countDocuments({ isPlus: true, createdAt: { $gte: weekAgo } }),
+        this.userModel.countDocuments({ isPlus: true, createdAt: { $gte: monthAgo } }),
+      ]);
+
+    return { totalUsers, plusUsers, newUsersWeek, newUsersMonth, newPlusWeek, newPlusMonth };
+  }
+
+  async updateSubscriptionStatus(email: string, status: 'active' | 'cancelled') {
+    const user = await this.userModel.findOne({ email });
+    if (!user) return;
+    await this.userModel.updateOne({ email }, { $set: { isPlus: status === 'active' } });
+  }
+
   async streamPhoto(authId: string, res: Response) {
     const user = await this.userModel.findById(authId);
     if (!user || !user.photoUrl) throw new NotFoundException('No photo uploaded');

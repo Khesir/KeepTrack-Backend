@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { put } from '@vercel/blob';
 import { Release, ReleaseDocument } from '../../schemas/release.schema';
 import { CreateReleaseDto } from './dto/create-release.dto';
 import { UpdateReleaseDto } from './dto/update-release.dto';
@@ -58,5 +59,42 @@ export class ReleasesService {
   async remove(id: string): Promise<void> {
     const doc = await this.releaseModel.findByIdAndDelete(id);
     if (!doc) throw new NotFoundException('Release not found.');
+  }
+
+  async removeAll(): Promise<{ deleted: number }> {
+    const result = await this.releaseModel.deleteMany({});
+    return { deleted: result.deletedCount };
+  }
+
+  async uploadFile(
+    platform: string,
+    file: Express.Multer.File,
+  ): Promise<{ url: string }> {
+    const ext = file.originalname.split('.').pop();
+    const filename = `releases/${platform}-${Date.now()}.${ext}`;
+
+    const blob = await put(filename, file.buffer, {
+      access: 'public' as any,
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+      contentType: file.mimetype,
+    });
+
+    return { url: blob.url };
+  }
+
+  async updatePlatformField(
+    id: string,
+    platform: string,
+    fields: Record<string, any>,
+  ): Promise<Release> {
+    const update: Record<string, any> = {};
+    for (const [key, value] of Object.entries(fields)) {
+      update[`platforms.${platform}.${key}`] = value;
+    }
+    const doc = await this.releaseModel
+      .findByIdAndUpdate(id, { $set: update }, { new: true })
+      .lean();
+    if (!doc) throw new NotFoundException('Release not found.');
+    return doc;
   }
 }

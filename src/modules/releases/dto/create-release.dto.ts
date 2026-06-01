@@ -1,4 +1,63 @@
-import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsUrl } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsBoolean,
+  IsEnum,
+  IsUrl,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+import { PlatformStatus } from '../../../schemas/release.schema';
+
+export class WindowsPlatformDto {
+  @IsEnum(PlatformStatus)
+  status: PlatformStatus;
+
+  @IsOptional()
+  @IsUrl()
+  downloadUrl?: string;
+}
+
+export class AndroidPlatformDto {
+  @IsEnum(PlatformStatus)
+  status: PlatformStatus;
+
+  @IsOptional()
+  @IsUrl()
+  apkUrl?: string;
+
+  @IsOptional()
+  @IsUrl()
+  playStoreUrl?: string;
+}
+
+export class StorePlatformDto {
+  @IsEnum(PlatformStatus)
+  status: PlatformStatus;
+
+  @IsOptional()
+  @IsUrl()
+  storeUrl?: string;
+}
+
+export class ReleasePlatformsDto {
+  @ValidateNested()
+  @Type(() => WindowsPlatformDto)
+  windows: WindowsPlatformDto;
+
+  @ValidateNested()
+  @Type(() => AndroidPlatformDto)
+  android: AndroidPlatformDto;
+
+  @ValidateNested()
+  @Type(() => StorePlatformDto)
+  macos: StorePlatformDto;
+
+  @ValidateNested()
+  @Type(() => StorePlatformDto)
+  ios: StorePlatformDto;
+}
 
 export class CreateReleaseDto {
   @IsString()
@@ -14,16 +73,9 @@ export class CreateReleaseDto {
   body: string;
 
   @IsOptional()
-  @IsUrl()
-  exeUrl?: string;
-
-  @IsOptional()
-  @IsUrl()
-  apkUrl?: string;
-
-  @IsOptional()
-  @IsUrl()
-  dmgUrl?: string;
+  @ValidateNested()
+  @Type(() => ReleasePlatformsDto)
+  platforms?: ReleasePlatformsDto;
 
   @IsOptional()
   @IsBoolean()
