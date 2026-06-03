@@ -15,6 +15,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getClass(),
     ]);
     if (isPublic) return true;
+
+    const req = context.switchToHttp().getRequest();
+    const crmSecret = req.headers['x-crm-secret'];
+    if (crmSecret && crmSecret === process.env.CRM_SECRET) return true;
+
     return super.canActivate(context);
   }
 }

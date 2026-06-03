@@ -45,6 +45,9 @@ export class User {
   @Prop({ default: false })
   isAdmin: boolean;
 
+  @Prop({ default: false })
+  isPlus: boolean;
+
   @Prop({ type: Object, default: {} })
   metadata: Record<string, any>;
 
