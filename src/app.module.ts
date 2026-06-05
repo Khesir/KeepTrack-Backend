@@ -22,10 +22,12 @@ import { ReleasesModule } from './modules/releases/releases.module';
 import { SupportModule } from './modules/support/support.module';
 import { AnnouncementsModule } from './modules/announcements/announcements.module';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
+import { HealthController } from './health.controller';
 
 let cachedConnection: any = null;
 
 @Module({
+  controllers: [HealthController],
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
