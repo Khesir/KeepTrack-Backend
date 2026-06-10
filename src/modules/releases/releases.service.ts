@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { put } from '@vercel/blob';
 import { Release, ReleaseDocument } from '../../schemas/release.schema';
+import { BlobStorageService } from '../../common/blob-storage/blob-storage.service';
 import { CreateReleaseDto } from './dto/create-release.dto';
 import { UpdateReleaseDto } from './dto/update-release.dto';
 
@@ -10,6 +10,7 @@ import { UpdateReleaseDto } from './dto/update-release.dto';
 export class ReleasesService {
   constructor(
     @InjectModel(Release.name) private releaseModel: Model<ReleaseDocument>,
+    private blobStorage: BlobStorageService,
   ) {}
 
   async create(dto: CreateReleaseDto): Promise<Release> {
@@ -70,16 +71,7 @@ export class ReleasesService {
     platform: string,
     file: Express.Multer.File,
   ): Promise<{ url: string }> {
-    const ext = file.originalname.split('.').pop();
-    const filename = `releases/${platform}-${Date.now()}.${ext}`;
-
-    const blob = await put(filename, file.buffer, {
-      access: 'public' as any,
-      token: process.env.BLOB_READ_WRITE_TOKEN,
-      contentType: file.mimetype,
-    });
-
-    return { url: blob.url };
+    return this.blobStorage.upload(`releases/${platform}`, file);
   }
 
   async updatePlatformField(

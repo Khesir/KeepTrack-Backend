@@ -40,7 +40,6 @@ export class BudgetsService {
     return this.budgetModel.create({
       ...dto,
       userId,
-      accountId: dto.accountId ? new Types.ObjectId(dto.accountId) : null,
       budgetProfileId: dto.budgetProfileId ? new Types.ObjectId(dto.budgetProfileId) : null,
       categories,
     });

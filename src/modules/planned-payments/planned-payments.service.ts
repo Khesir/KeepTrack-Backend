@@ -51,7 +51,6 @@ export class PlannedPaymentsService {
     return this.plannedPaymentModel.create({
       ...dto,
       userId: new Types.ObjectId(authId),
-      accountId: dto.accountId ? new Types.ObjectId(dto.accountId) : null,
     });
   }
 
@@ -89,10 +88,9 @@ export class PlannedPaymentsService {
       if (updates.remainingInstallments === 0) updates.status = 'closed';
     }
 
-    if (dto.createTransaction && payment.accountId) {
+    if (dto.createTransaction) {
       await this.transactionModel.create({
         userId: new Types.ObjectId(authId),
-        accountId: payment.accountId,
         amount: payment.amount,
         type: 'expense',
         description: payment.name,

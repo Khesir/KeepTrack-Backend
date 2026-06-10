@@ -13,7 +13,7 @@ const mockService = {
 };
 
 const req = { user: { authId: 'auth-id-1' } };
-const plan = { id: 'plan-1', month: '2025-01', accountId: 'acc-1' };
+const plan = { id: 'plan-1', month: '2025-01' };
 
 describe('MonthPlansController', () => {
   let controller: MonthPlansController;

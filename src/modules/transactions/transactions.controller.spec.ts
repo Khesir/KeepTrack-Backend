@@ -36,7 +36,7 @@ describe('TransactionsController', () => {
 
   it('GET /transactions — passes query filters', async () => {
     mockService.findAll.mockResolvedValue([]);
-    const query = { accountId: 'acc-1', type: 'expense' };
+    const query = { savingsId: 'sav-1', type: 'expense' };
     await controller.findAll(req as any, query);
     expect(mockService.findAll).toHaveBeenCalledWith('auth-id-1', query);
   });
@@ -55,7 +55,7 @@ describe('TransactionsController', () => {
 
   it('POST /transactions — creates transaction', async () => {
     mockService.create.mockResolvedValue(tx);
-    const dto = { accountId: 'acc-1', amount: 50, type: 'expense', description: 'Food', date: '2025-01-01' } as any;
+    const dto = { amount: 50, type: 'expense', description: 'Food', date: '2025-01-01' } as any;
     const result = await controller.create(req as any, dto);
     expect(mockService.create).toHaveBeenCalledWith('auth-id-1', dto);
     expect(result).toBe(tx);

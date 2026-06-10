@@ -8,7 +8,6 @@ export class CreateDebtDto {
   @IsNumber() remainingAmount: number;
   @IsDateString() startDate: string;
   @IsOptional() @IsDateString() dueDate?: string;
-  @IsOptional() @IsString() accountId?: string;
   @IsOptional() @IsString() transactionId?: string;
   @IsOptional() @IsNumber() monthlyPaymentAmount?: number;
   @IsOptional() @IsNumber() feeAmount?: number;

@@ -8,9 +8,6 @@ export class Debt {
   @Prop({ required: true, type: Types.ObjectId, ref: 'User', index: true })
   userId: Types.ObjectId;
 
-  @Prop({ default: null, type: Types.ObjectId, ref: 'Account' })
-  accountId: Types.ObjectId | null;
-
   @Prop({ default: null, type: Types.ObjectId, ref: 'Transaction' })
   transactionId: Types.ObjectId | null;
 
@@ -72,7 +69,6 @@ DebtSchema.set('toJSON', {
     delete ret._id;
     delete ret.__v;
     if (ret.budgetProfileId) ret.budgetProfileId = ret.budgetProfileId.toString();
-    if (ret.accountId) ret.accountId = ret.accountId.toString();
     return ret;
   },
 });

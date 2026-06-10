@@ -34,7 +34,6 @@ export class DebtsService {
     return this.debtModel.create({
       ...dto,
       userId: new Types.ObjectId(authId),
-      accountId: dto.accountId ? new Types.ObjectId(dto.accountId) : null,
       transactionId: dto.transactionId ? new Types.ObjectId(dto.transactionId) : null,
       budgetProfileId: dto.budgetProfileId ? new Types.ObjectId(dto.budgetProfileId) : null,
     });
@@ -76,7 +75,6 @@ export class DebtsService {
     // Create transaction
     await this.transactionModel.create({
       userId,
-      accountId: dto.accountId ? new Types.ObjectId(dto.accountId) : (debt.accountId ?? null),
       amount: dto.amount,
       type: debt.type === 'lending' ? 'income' : 'expense',
       description: debt.type === 'lending'

@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { put } from '@vercel/blob';
 import { SupportTicket, SupportTicketDocument } from '../../schemas/support-ticket.schema';
+import { BlobStorageService } from '../../common/blob-storage/blob-storage.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 
@@ -11,17 +11,11 @@ export class SupportService {
   constructor(
     @InjectModel(SupportTicket.name)
     private ticketModel: Model<SupportTicketDocument>,
+    private blobStorage: BlobStorageService,
   ) {}
 
   async uploadImage(file: Express.Multer.File): Promise<{ url: string }> {
-    const ext = file.originalname.split('.').pop();
-    const filename = `support/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const blob = await put(filename, file.buffer, {
-      access: 'public',
-      token: process.env.BLOB_READ_WRITE_TOKEN,
-      contentType: file.mimetype,
-    });
-    return { url: blob.url };
+    return this.blobStorage.upload('support', file);
   }
 
   async create(dto: CreateTicketDto): Promise<SupportTicket> {

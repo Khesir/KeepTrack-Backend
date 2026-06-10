@@ -8,9 +8,6 @@ export class PlannedPayment {
   @Prop({ required: true, type: Types.ObjectId, ref: 'User', index: true })
   userId: Types.ObjectId;
 
-  @Prop({ default: null, type: Types.ObjectId, ref: 'Account' })
-  accountId: Types.ObjectId | null;
-
   @Prop({ required: true })
   name: string;
 

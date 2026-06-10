@@ -8,9 +8,6 @@ export class MonthPlan {
   @Prop({ required: true, type: Types.ObjectId, ref: 'User', index: true })
   userId: Types.ObjectId;
 
-  @Prop({ default: null, type: Types.ObjectId, ref: 'Account' })
-  accountId: Types.ObjectId | null;
-
   // null for profile plans; required for monthly plans
   @Prop({ default: null, index: true })
   month: string | null;

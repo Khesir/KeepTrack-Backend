@@ -83,7 +83,6 @@ export class SubscriptionsService {
       subscriptionId: sub._id,
       financeCategoryId: sub.budgetCategoryId ?? null,
       budgetId: budgetId ? new Types.ObjectId(budgetId) : null,
-      accountId: null,
     });
 
     return { subscription: await this.findOne(id, authId), transaction: tx };

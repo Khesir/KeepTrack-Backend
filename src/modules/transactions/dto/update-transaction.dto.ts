@@ -1,8 +1,6 @@
 import { IsDateString, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateTransactionDto {
-  @IsOptional() @IsString() accountId?: string;
-  @IsOptional() @IsString() toAccountId?: string;
   @IsOptional() @IsString() financeCategoryId?: string;
   @IsOptional() @IsNumber() amount?: number;
   @IsOptional() @IsEnum(['income', 'expense', 'transfer']) type?: string;

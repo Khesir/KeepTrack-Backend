@@ -9,7 +9,6 @@ export class CreatePlannedPaymentDto {
   @IsEnum(['daily', 'weekly', 'biweekly', 'monthly', 'quarterly', 'yearly', 'oneTime'])
   frequency: string;
   @IsDateString() nextPaymentDate: string;
-  @IsOptional() @IsString() accountId?: string;
   @IsOptional() @IsString() notes?: string;
   @IsOptional() @IsNumber() totalInstallments?: number;
   @IsOptional() @IsNumber() remainingInstallments?: number;

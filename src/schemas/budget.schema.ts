@@ -20,9 +20,6 @@ export class Budget {
   @Prop({ required: true, type: Types.ObjectId, ref: 'User', index: true })
   userId: Types.ObjectId;
 
-  @Prop({ default: null, type: Types.ObjectId, ref: 'Account' })
-  accountId: Types.ObjectId | null;
-
   // For monthly budgets: 'YYYY-MM'. For profile budgets: null.
   @Prop({ default: null, index: true })
   month: string | null;
@@ -67,7 +64,6 @@ BudgetSchema.set('toJSON', {
 
     // Ensure ObjectId references are strings
     if (ret.budgetProfileId) ret.budgetProfileId = ret.budgetProfileId.toString();
-    if (ret.accountId) ret.accountId = ret.accountId.toString();
     if (ret.userId) ret.userId = ret.userId.toString();
 
     // Normalise embedded category subdocuments

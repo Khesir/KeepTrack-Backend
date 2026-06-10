@@ -40,7 +40,6 @@ export class MonthPlansService {
     return this.monthPlanModel.create({
       ...dto,
       userId: new Types.ObjectId(authId),
-      accountId: dto.accountId ? new Types.ObjectId(dto.accountId) : null,
       budgetProfileId: dto.budgetProfileId ? new Types.ObjectId(dto.budgetProfileId) : null,
       budgetIds: (dto.budgetIds ?? []).map((id) => new Types.ObjectId(id)),
     });
@@ -104,7 +103,6 @@ export class MonthPlansService {
 
     return this.monthPlanModel.create({
       userId,
-      accountId: source.accountId,
       month: targetMonth,
       notes: source.notes,
       budgetIds: [],
